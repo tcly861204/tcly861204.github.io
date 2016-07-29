@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>小男孩推箱子</title>
+	<style type="text/css">
+	html,body,div,span,p{
+		margin:0;
+		border:0;
+		padding:0;
+		outline:none;
+	}
+	html,body{
+		width:100%;
+		height:100%;
+		background:url('images/bj.jpg') repeat;
+	}
+	#top{
+	    height:34px;
+		width:100%;
+       	background:url('images/topbj.jpg') repeat-x;	
+	}
+	#hd{
+	    width:800px;
+		margin:0 auto;
+		height:29px;
+		padding:5px 0 0 0;
+	}
+	#hd .item{
+		height:24px;
+		line-height:24px;
+		background:rgba(0,0,0,0.3);
+		border-radius:6px;
+		text-indent:7px;
+		position:relative;
+		color:#cac48e;
+		display:inline-block;
+		margin: 0 20px 0 0;
+		text-shadow: 1px 1px 1px #000000;
+	}
+	#hd .item span{
+	    display:inline-block;
+		width:34px;
+		height:24px;
+		background:#222;
+		border-radius:6px;
+		text-align:center;
+		font-size:16px;
+		font-weight:bold;
+		color:#fff;
+		position:absolute;
+		top:0;
+		right:0;
+		text-indent:0;
+	}
+	#hd .item-level{
+	    width:86px;
+	}
+	#hd .item-moves{
+	    width:120px;
+	}
+	#hd .item-moves span{
+	    width:60px;
+		color:#c7a106;
+	}
+	#hd .item-Pushes{
+	    width:126px;
+	}
+	#hd .item-Pushes span{
+	    width:60px;
+		color:#c7a106;
+	}
+	#hd .btns{
+	    width:200px;
+		height:24px;
+		float:right;
+	}
+	#hd .btns .item{
+		display:inline-block;
+		cursor:pointer;
+		margin:0 0 8px 0;
+	}
+	#hd .btns .item-prev{
+	    background:url('./images/left.jpg') no-repeat;
+		width:30px;
+		height:22px;
+	}
+	#hd .btns .item-restart{
+	    background:url('./images/restart.jpg') no-repeat;
+		width:61px;
+		height:22px;
+	}
+	#hd .btns .item-music{
+	    background:url('./images/music.jpg') no-repeat;
+		width:30px;
+		height:22px;
+	}
+	#hd .btns .item-menu{
+	    background:url('./images/menu.jpg') no-repeat;
+		width:58px;
+		height:22px;
+	}
+	#game{
+	    position:relative;
+		top:30px;
+	}
+	#game img{
+	    position:absolute;
+		display:block;
+		width:27px;
+		height:27px;
+	}
+	#game img.box{
+	    z-index:2;
+	}
+	#game img.pull{
+	    background:url('images/pull.jpg') no-repeat 0 0;
+		z-index:3;
+	}
+	</style>
+</head>
+<body>
+<div id="top">
+    <div id="hd">
+        <p class="item item-level">Level<span id="level">0</span></p>
+		<p class="item item-moves">Moves<span id="moves">0</span></p>
+		<p class="item item-Pushes">Pushes<span id="pushes">0</span></p>
+		<div class="btns">
+		    <span class="item item-prev"></span>
+			<span class="item item-restart"></span>
+			<span class="item item-music"></span>
+			<span class="item item-menu"></span>
+		</div>
+    </div>
+</div>
+<div id="game">
+	
+</div>
+<audio class="music" src="images/music.mp3" autoplay="true" preload="load" loop>
+<script type="text/javascript" src="Game.min.js"></script>
+<script type="text/javascript">
+window.onload = function(){
+	Game.init();
+};
+</script>
+</body>
+</html>
