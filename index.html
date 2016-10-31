@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <title>小男孩推箱子</title>
 	<link rel="stylesheet" type="text/css" href="basic.css" />
-</head>
+</head>	
 <body>
 <div id="top">
     <div id="hd">
@@ -20,10 +20,10 @@
 		<p class="item item-moves">Moves<span id="moves">0</span></p>
 		<p class="item item-Pushes">Pushes<span id="pushes">0</span></p>
 		<div class="btns">
-		    <span class="item item-prev"></span>
-			<span class="item item-restart"></span>
-			<span class="item item-music"></span>
 			<span class="item item-menu"></span>
+			<span class="item item-music"></span>
+			<span class="item item-restart"></span>
+			<span class="item item-prev"></span>
 		</div>
     </div>
 </div>
@@ -31,7 +31,8 @@
 	
 </div>
 <audio class="music" src="images/music.mp3" autoplay="true" preload="load" loop>
-<script type="text/javascript" src="Game.min.js"></script>
+<script type="text/javascript" src="dataJson.js"></script>
+<script type="text/javascript" src="Game.js"></script>
 <script type="text/javascript">
 window.onload = function(){
 	Game.init();
