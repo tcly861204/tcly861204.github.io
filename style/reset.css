@@ -1,0 +1,82 @@
+@charset "UTF-8";
+body,div,dl,dt,dd,ul,ol,li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+form,
+fieldset,
+input,
+textarea,
+p,
+blockquote,
+th,
+td,
+ul,li,
+span {
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+body {
+    font-size: 12px;
+    font-family: "Microsoft YaHei", "微软雅黑", "Arial", "黑体", "宋体", sans-serif;
+    background: #ececec;
+}
+ul,li {
+    list-style: none;
+}
+fieldset,img,html,
+body,
+iframe {
+    border: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+em,
+strong,
+b,
+i {
+    font-style: normal;
+    font-size: 100%;
+    font-weight: normal;
+}
+input,
+textarea,
+a,
+button,
+select {
+    outline: none;
+    font-size: 12px;
+    border: 0;
+}
+input::-ms-clear,
+input::-ms-reveal {
+    display: none;
+}
+textarea {
+    overflow: auto;
+    resize: none;
+}
+textarea,
+input,
+button,
+select {
+    color: inherit;
+    font-family: "Microsoft YaHei", "微软雅黑", "Arial", "黑体", "宋体", sans-serif;
+}
+.fl {
+    float: left;
+}
+.fr {
+    float: right;
+}
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+.clearfix{*+height:1%;}

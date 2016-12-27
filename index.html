@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="keywords" content="个人作品" />
+    <meta name="author" content="吴天赐 Email:356671808@qq.com" />
+    <meta name="description" content="h5游戏开发，推箱子小游戏" />
+    <meta name="format-detection" content="telephone=no, email=no"/>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>个人作品</title>
+    <link rel="stylesheet" type="text/css" href="style/reset.css" />
+    <link rel="stylesheet" type="text/css" href="style/basic.css" />
+    <script data-main="js/main" src="js/require.min.js"></script>
+</head>
+<body>
+<div id="icon-list">
+    <dl class="icon-item">
+        <dt><img src="images/qq.png"></dt>
+        <dd>QQ</dd>
+    </dl>
+    <dl class="icon-item">
+        <dt><img src="images/mp3.png"></dt>
+        <dd>音乐</dd>
+    </dl>
+    <dl class="icon-item">
+        <dt><img src="images/game.png"></dt>
+        <dd>游戏</dd>
+    </dl>
+    <dl class="icon-item">
+        <dt><img src="images/trash.png"></dt>
+        <dd>回收站</dd>
+    </dl>
+</div>
+
+
+
+
+<div class="win-layer">
+    <div class="win-layer-header">
+        <h2 class="win-layer-music-logo"></h2>
+        <div title="关闭" class="close">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <div class="win-layer-main">
+        <div id="play-music">
+            <div class="music-left">
+                <dl>
+                    <dt>播放列表</dt>
+                    <dd></dd>
+                </dl>
+            </div>
+            <div class="music-right">
+                <canvas id="music-canvas"></canvas>
+            </div>
+            <div class="music-main">
+                <div id="pre-audio-play"></div>
+                <div id="audio-play" class="audio-stop"></div>
+                <div id="next-audio-play"></div>
+                <div id="audio-play-line">
+                    <div id="audio-music-line"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--
+<div id="smallDate">
+    <div class="date_main">
+        <div class="date_left">
+            <ul class="styleCircle">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+            <div class="main">
+                <p class="month">十二</p>
+                <p class="day">01</p>
+            </div>
+        </div>
+        <div class="date_right">
+            <p class="time"></p>
+            <p class="date"></p>
+            <p class="week"></p>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="calendar">
+ <div class="title">
+    <h2 class="theTime"></h2>
+    <p class="theDate"></p>
+ </div>
+ <div class="tool clearfix">
+    <span class="nowDate fl"></span>
+    <span class="icon down fr">向下</span>
+    <span class="icon up fr">向上</span>
+ </div>
+ <ul id="dateTimeList" class="dateTime clearfix">
+ </ul>
+ <div title="关闭" class="close">
+    <span></span>
+    <span></span>
+    <span></span>
+ </div>
+ <div class="calendar-bg"></div>
+</div>
+
+-->
+
+
+</body>
+</html>
