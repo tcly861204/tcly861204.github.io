@@ -1,7 +1,3 @@
-<table bgcolor=#7FFFD4>
-<tr>
-<td>
+<center>
 <img src="./img/face.png" width="200" height="200">
-</td>
-</tr>
-</table>
+</center>
