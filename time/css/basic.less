@@ -1,0 +1,53 @@
+.transform3D(){
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+html,body,div{
+  margin: 0;
+  padding: 0;
+  border:0;
+}
+html,body{
+  height: 100%;
+  overflow: hidden;
+}
+.box{
+  width: 100px;
+  height: 100px;
+  margin: 200px auto;
+  -webkit-perspective: 800px;
+  perspective: 800px;
+  .div{
+    width: 100px;
+    height: 100px;
+    position: relative;
+    .transform3D();
+    transition: 3s;
+    transform-origin: center center -153.884177px;
+    div{
+      position: absolute;
+      left: 0;
+      top:100px;
+      .transform3D();
+      -webkit-transform-origin: top;
+      transform-origin: top;
+      transform:rotateX(-36deg);
+    }
+    span{
+      width: 98px;
+      height: 98px;
+      border: 1px solid #000000;
+      background: #ccc;
+      text-align: center;
+      font-size: 50px;
+      line-height: 98px;
+      display: block;
+    }
+  }
+}
+.box .div>div{
+  top:0;
+  transform:rotateX(0deg);
+}
