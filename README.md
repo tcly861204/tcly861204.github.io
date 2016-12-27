@@ -1,1 +1,3 @@
-<img src="./img/face.png" width="100" height="100">
+<div text-align="center">
+<img src="./img/face.png" width="200" height="200">
+</div>
