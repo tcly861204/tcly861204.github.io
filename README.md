@@ -5,9 +5,9 @@
 [个人主页](http://tcly861204.github.io)
 
    ```
-   #include <stdio.h>
-   int main(void)
-   {
-       printf("Hello world\n");
-   }
-   、、、
+1.   #include <stdio.h>
+2.   int main(void)
+3.   {
+4.       printf("Hello world\n");
+5.   }
+   ```
