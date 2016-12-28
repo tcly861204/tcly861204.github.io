@@ -23,10 +23,10 @@ define(['Lyf','function','musicJson'],function($,fn,DATA){
                 that.media();
                 playMusic.addEventListener('click',function(){
                     if(that.flag){
-                        this.className = "audio-stop";
+                        this.className = "music-stop";
                         that.music.pause();
                     }else{
-                        this.className = "audio-play";
+                        this.className = "music-play";
                         that.play();
                     }
                     that.flag = !that.flag;
