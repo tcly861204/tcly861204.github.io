@@ -1,0 +1,317 @@
+<!DOCTYPE html><html class="theme-next pisces use-motion"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=2"><meta name="theme-color" content="#222"><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.css"><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css"><link rel="stylesheet" href="/css/main.css?v=7.1.1"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1"><link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222"><script id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Pisces",version:"7.1.1",sidebar:{position:"left","Muse | Mist":320,"Pisces | Gemini":240,width:300,display:"post",offset:12,onmobile:!1,dimmer:!1},back2top:!0,back2top_sidebar:!1,fancybox:!1,fastclick:!1,lazyload:!1,tabs:!0,motion:{enable:!0,async:!0,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><meta name="description" content="前端开发过程中你们觉得处理什么业务功能最烦人？做前端已经有很长一段时间了，不知道大家是否和我有同样的感受，在一些 Web 应用中表单处理起来比其他功能模块都麻烦，很多体力活，往往在数据的校验会很费时间。为了能够把这部分代码更有条理,我们把数据校验部分通过 Schema 预先定义一个数据模型，把数据扔进去，返回校验结果。接下来我介绍一下这个工具，schema-typed 是一个数据建模及数据验证工具"><meta name="keywords" content="js"><meta property="og:type" content="article"><meta property="og:title" content="前端数据校验从建模开始"><meta property="og:url" content="https://tcly861204.github.io/2019/07/31/前端数据校验从建模开始/index.html"><meta property="og:site_name" content="tcly861204"><meta property="og:description" content="前端开发过程中你们觉得处理什么业务功能最烦人？做前端已经有很长一段时间了，不知道大家是否和我有同样的感受，在一些 Web 应用中表单处理起来比其他功能模块都麻烦，很多体力活，往往在数据的校验会很费时间。为了能够把这部分代码更有条理,我们把数据校验部分通过 Schema 预先定义一个数据模型，把数据扔进去，返回校验结果。接下来我介绍一下这个工具，schema-typed 是一个数据建模及数据验证工具"><meta property="og:locale" content="default"><meta property="og:updated_time" content="2019-09-10T14:58:15.200Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="前端数据校验从建模开始"><meta name="twitter:description" content="前端开发过程中你们觉得处理什么业务功能最烦人？做前端已经有很长一段时间了，不知道大家是否和我有同样的感受，在一些 Web 应用中表单处理起来比其他功能模块都麻烦，很多体力活，往往在数据的校验会很费时间。为了能够把这部分代码更有条理,我们把数据校验部分通过 Schema 预先定义一个数据模型，把数据扔进去，返回校验结果。接下来我介绍一下这个工具，schema-typed 是一个数据建模及数据验证工具"><link rel="canonical" href="https://tcly861204.github.io/2019/07/31/前端数据校验从建模开始/"><script id="page.configurations">CONFIG.page={sidebar:""}</script><title>前端数据校验从建模开始 | tcly861204</title><noscript><style>.sidebar-inner,.use-motion .brand,.use-motion .collection-title,.use-motion .comments,.use-motion .menu-item,.use-motion .motion-element,.use-motion .pagination,.use-motion .post-block,.use-motion .post-body,.use-motion .post-header{opacity:initial}.use-motion .logo,.use-motion .site-subtitle,.use-motion .site-title{opacity:initial;top:initial}.use-motion .logo-line-before i{left:initial}.use-motion .logo-line-after i{right:initial}</style></noscript></head><body itemscope itemtype="http://schema.org/WebPage" lang="default"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">tcly861204</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle">前端bolg</p></div><div class="site-nav-toggle"><button aria-label="切换导航栏"><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br>标签<span class="badge">17</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br>分类<span class="badge">2</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档<span class="badge">16</span></a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"><input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><a href="https://github.com/tcly861204" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0 0 115 115 130 115 142 142 250 250 250 0Z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentColor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4L133.7 101.6C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8Z" fill="currentColor" class="octo-body"/></svg></a><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><div class="reading-progress-bar"></div><article class="post post-type-normal" itemscope itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://tcly861204.github.io/2019/07/31/前端数据校验从建模开始/"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="name" content="tcly861204"><meta itemprop="description" content="笨鸟先飞"><meta itemprop="image" content="/images/avatar.png"></span><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="tcly861204"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">前端数据校验从建模开始<a href="https://github.com/tcly861204/blog/edit/master/source/_posts/前端数据校验从建模开始.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pencil"></i></a></h1><div class="post-tags"><a href="/tags/js/" rel="tag"><i class="fa fa-tag"></i> js</a></div><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建时间：2019-07-31 07:24:07" itemprop="dateCreated datePublished" datetime="2019-07-31T07:24:07+00:00">2019-07-31</time> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-calendar-check-o"></i></span> <span class="post-meta-item-text">更新于</span> <time title="修改时间：2019-09-10 14:58:15" itemprop="dateModified" datetime="2019-09-10T14:58:15+00:00">2019-09-10</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span></span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-eye"></i> 阅读次数：<span class="busuanzi-value" id="busuanzi_value_page_pv"></span></span></div></header><div class="post-body" itemprop="articleBody"><p>前端开发过程中你们觉得处理什么业务功能最烦人？<br>做前端已经有很长一段时间了，不知道大家是否和我有同样的感受，在一些 Web 应用中表单处理起来比其他功能模块都麻烦，很多体力活，往往在数据的校验会很费时间。<br>为了能够把这部分代码更有条理,我们把数据校验部分通过 Schema 预先定义一个数据模型，把数据扔进去，返回校验结果。<br>接下来我介绍一下这个工具，<code>schema-typed</code> 是一个数据建模及数据验证工具, 它可以非常方便的设计的表单数据结构，当然它不限于在表单使用。如果你在产品中使用了 <code>React</code> , 那配合 <code>React Suite</code> 的表单组件简直就是如虎添翼。</p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><blockquote><p>npm install schema-typed –save</p></blockquote><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; SchemaModel, StringType, DateType, NumberType &#125; <span class="keyword">from</span> <span class="string">'schema-typed'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> model = SchemaModel(&#123;</span><br><span class="line">  username: StringType().isRequired(<span class="string">'用户名不能为空'</span>),</span><br><span class="line">  email: StringType().isEmail(<span class="string">'请输入正确的邮箱'</span>),</span><br><span class="line">  age: NumberType(<span class="string">'年龄应该是一个数字'</span>).range(<span class="number">18</span>, <span class="number">30</span>, <span class="string">'年龄应该在 18 到 30 岁之间'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> checkResult = model.check(&#123;</span><br><span class="line">  username: <span class="string">'foobar'</span>,</span><br><span class="line">  email: <span class="string">'foo@bar.com'</span>,</span><br><span class="line">  age: <span class="number">40</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(checkResult);</span><br></pre></td></tr></table></figure><p><code>checkResult</code> 返回结构是:<br></p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attribute">username</span>: &#123; hasError: false &#125;,</span><br><span class="line">    <span class="selector-tag">email</span>: &#123; <span class="attribute">hasError</span>: false &#125;,</span><br><span class="line">    <span class="selector-tag">age</span>: &#123; <span class="attribute">hasError</span>: true, errorMessage: <span class="string">'年龄应该在 18 到 30 岁之间'</span> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p></p><h2 id="多重验证"><a href="#多重验证" class="headerlink" title="多重验证"></a>多重验证</h2><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">StringType</span>()</span><br><span class="line">  <span class="selector-class">.minLength</span>(<span class="number">6</span>, <span class="string">'不能少于 6 个字符'</span>)</span><br><span class="line">  <span class="selector-class">.maxLength</span>(<span class="number">30</span>, <span class="string">'不能大于 30 个字符'</span>)</span><br><span class="line">  <span class="selector-class">.isRequired</span>(<span class="string">'该字段不能为空'</span>);</span><br></pre></td></tr></table></figure><h2 id="自定义验证"><a href="#自定义验证" class="headerlink" title="自定义验证"></a>自定义验证</h2><p>通过 <code>addRule</code> 函数自定义一个规则。</p><p>如果是对一个字符串类型的数据进行验证，可以通过 pattern 方法设置一个正则表达式进行自定义验证。</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">const</span> <span class="string">model</span> <span class="string">=</span> <span class="string">SchemaModel(&#123;</span></span><br><span class="line"><span class="attr">  field1:</span> <span class="string">StringType().addRule((value,</span> <span class="string">data)</span> <span class="string">=&gt;</span> <span class="string">&#123;</span></span><br><span class="line">    <span class="string">return</span> <span class="string">/^[1-9][0-9]&#123;3&#125;\s?[a-zA-Z]&#123;2&#125;$/.test(value);</span></span><br><span class="line">  <span class="string">&#125;,</span> <span class="string">'请输入合法字符'</span><span class="string">),</span></span><br><span class="line"><span class="attr">  field2:</span> <span class="string">StringType().pattern(/^[1-9][0-9]&#123;3&#125;\s?[a-zA-Z]&#123;2&#125;$/,</span> <span class="string">'请输入合法字符'</span><span class="string">)</span></span><br><span class="line"><span class="string">&#125;);</span></span><br><span class="line"></span><br><span class="line"><span class="string">model.check(&#123;</span> <span class="attr">field1:</span> <span class="string">''</span><span class="string">,</span> <span class="attr">field2:</span> <span class="string">''</span> <span class="string">&#125;);</span></span><br><span class="line"></span><br><span class="line"><span class="string">/**</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="attr">  field1:</span> <span class="string">&#123;</span></span><br><span class="line"><span class="attr">    hasError:</span> <span class="literal">true</span><span class="string">,</span></span><br><span class="line"><span class="attr">    errorMessage:</span> <span class="string">'请输入合法字符'</span></span><br><span class="line">  <span class="string">&#125;,</span></span><br><span class="line"><span class="attr">  field2:</span> <span class="string">&#123;</span></span><br><span class="line"><span class="attr">    hasError:</span> <span class="literal">true</span><span class="string">,</span></span><br><span class="line"><span class="attr">    errorMessage:</span> <span class="string">'请输入合法字符'</span></span><br><span class="line">  <span class="string">&#125;</span></span><br><span class="line"><span class="string">&#125;;</span></span><br><span class="line"><span class="string">**/</span></span><br></pre></td></tr></table></figure><h2 id="自定义验证-多字段交叉验证"><a href="#自定义验证-多字段交叉验证" class="headerlink" title="自定义验证 - 多字段交叉验证"></a>自定义验证 - 多字段交叉验证</h2><p>例如，验证两次输入密码是否一致</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">const</span> <span class="string">model</span> <span class="string">=</span> <span class="string">SchemaModel(&#123;</span></span><br><span class="line"><span class="attr">  password1:</span> <span class="string">StringType().isRequired('该字段不能为空'),</span></span><br><span class="line"><span class="attr">  password2:</span> <span class="string">StringType().addRule((value,</span> <span class="string">data)</span> <span class="string">=&gt;</span> <span class="string">&#123;</span></span><br><span class="line">    <span class="string">if</span> <span class="string">(value</span> <span class="string">!==</span> <span class="string">data.password1)</span> <span class="string">&#123;</span></span><br><span class="line">      <span class="string">return</span> <span class="literal">false</span><span class="string">;</span></span><br><span class="line">    <span class="string">&#125;</span></span><br><span class="line">    <span class="string">return</span> <span class="literal">true</span><span class="string">;</span></span><br><span class="line">  <span class="string">&#125;,</span> <span class="string">'两次密码不一致'</span><span class="string">)</span></span><br><span class="line"><span class="string">&#125;);</span></span><br><span class="line"></span><br><span class="line"><span class="string">model.check(&#123;</span> <span class="attr">password1:</span> <span class="string">'123456'</span><span class="string">,</span> <span class="attr">password2:</span> <span class="string">'root'</span> <span class="string">&#125;);</span></span><br><span class="line"></span><br><span class="line"><span class="string">/**</span></span><br><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="attr">  password1:</span> <span class="string">&#123;</span> <span class="attr">hasError:</span> <span class="literal">false</span> <span class="string">&#125;,</span></span><br><span class="line"><span class="attr">  password2:</span> <span class="string">&#123;</span></span><br><span class="line"><span class="attr">    hasError:</span> <span class="literal">true</span><span class="string">,</span></span><br><span class="line"><span class="attr">    errorMessage:</span> <span class="string">'两次密码不一致'</span></span><br><span class="line">  <span class="string">&#125;</span></span><br><span class="line"><span class="string">&#125;;</span></span><br><span class="line"><span class="string">**/</span></span><br></pre></td></tr></table></figure><h2 id="嵌套对象"><a href="#嵌套对象" class="headerlink" title="嵌套对象"></a>嵌套对象</h2><p>对于复杂的嵌套的 <code>Object</code> , 可以使用 <code>ObjectType().shape</code> 方法进行定义，比如：</p><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">const model = SchemaModel(&#123;</span><br><span class="line">  id: NumberType().isRequired('该字段不能为空'),</span><br><span class="line">  name: StringType().isRequired('用户名不能为空'),</span><br><span class="line">  info: ObjectType().shape(&#123;</span><br><span class="line">    email: StringType().isEmail('应该是一个 email'),</span><br><span class="line">    age: numberType().min(<span class="number">18</span>, '年龄应该大于<span class="number">18</span>岁')</span><br><span class="line">  &#125;)<span class="comment">;</span></span><br><span class="line">&#125;)<span class="comment">;</span></span><br></pre></td></tr></table></figure><p>另外，更推荐把对象扁平化设计</p><figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">import</span> &#123; flaser &#125; from <span class="string">'object-flaser'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> model = SchemaModel(&#123;</span><br><span class="line">  <span class="attribute">id:</span><span class="string"> NumberType</span>().isRequired(<span class="string">'该字段不能为空'</span>),</span><br><span class="line">  <span class="attribute">name</span>: StringType().isRequired(<span class="string">'用户名不能为空'</span>),</span><br><span class="line">  <span class="string">'info.email'</span>: StringType().isEmail(<span class="string">'应该是一个 email'</span>),</span><br><span class="line">  <span class="string">'info.age'</span>: numberType().min(<span class="number">18</span>, <span class="string">'年龄应该大于18岁'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> user = flaser(&#123;</span><br><span class="line">  <span class="attribute">id:</span><span class="string"> 1,</span></span><br><span class="line"><span class="string">  name</span>: <span class="string">'schema-type'</span>,</span><br><span class="line">  <span class="attribute">info</span>: &#123;</span><br><span class="line">    <span class="attribute">email</span>: <span class="string">'schema-type@gmail.com'</span>,</span><br><span class="line">    <span class="attribute">age</span>: <span class="number">17</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">model.check(data);</span><br></pre></td></tr></table></figure><h2 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h2><p><code>SchemaModel</code> 提供了一个静态方法 <code>combine</code>, 可以对多个 <code>SchemaModel</code> 合并返回一个新的 <code>SchemaModel</code>。</p><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> model1 = SchemaModel(&#123;</span><br><span class="line">  username: StringType().isRequired(<span class="string">'用户名不能为空'</span>),</span><br><span class="line">  email: StringType().isEmail(<span class="string">'请输入正确的邮箱'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> model2 = SchemaModel(&#123;</span><br><span class="line">  username: StringType().minLength(<span class="number">7</span>, <span class="string">'最少7个字符'</span>),</span><br><span class="line">  age: NumberType().<span class="keyword">range</span>(<span class="number">18</span>, <span class="number">30</span>, <span class="string">'年应该在 18 到 30 岁'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> model3 = SchemaModel(&#123;</span><br><span class="line">  groupId: NumberType().isRequired(<span class="string">'该字段不能为空'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> model4 = SchemaModel.combine(model1, model2, model3);</span><br><span class="line"></span><br><span class="line">model4.check(&#123;</span><br><span class="line">  username: <span class="string">'foobar'</span>,</span><br><span class="line">  email: <span class="string">'foo@bar.com'</span>,</span><br><span class="line">  age: <span class="number">40</span>,</span><br><span class="line">  groupId: <span class="number">1</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><ul><li>SchemaModel</li><li>StringType</li><li>NumberType</li><li>ArrayType</li><li>DateType</li><li>ObjectType</li><li>BooleanType</li></ul><h2 id="SchemaModel"><a href="#SchemaModel" class="headerlink" title="SchemaModel"></a>SchemaModel</h2><p>check(data: Object)<br></p><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const <span class="keyword">model</span> = SchemaModel(&#123;</span><br><span class="line">  username: StringType().isRequired(<span class="string">'该字段不能为空'</span>),</span><br><span class="line">  email: StringType().isEmail(<span class="string">'请输入正确的邮箱'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">model</span>.check(&#123;</span><br><span class="line">  username: <span class="string">'root'</span>,</span><br><span class="line">  email: <span class="string">'root@email.com'</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><p></p><ul><li>checkForField(fieldName: string, fieldValue: any, data: Object)</li></ul><figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const <span class="keyword">model</span> = SchemaModel(&#123;</span><br><span class="line">  username: StringType().isRequired(<span class="string">'该字段不能为空'</span>),</span><br><span class="line">  email: StringType().isEmail(<span class="string">'请输入正确的邮箱'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">model</span>.checkForField(<span class="string">'username'</span>, <span class="string">'root'</span>);</span><br></pre></td></tr></table></figure><h2 id="StringType"><a href="#StringType" class="headerlink" title="StringType"></a>StringType</h2><ul><li>isRequired(errorMessage: string)</li></ul><blockquote><p>StringType().isRequired(‘该字段不能为空’);</p></blockquote><ul><li>isEmail(errorMessage: string)</li></ul><blockquote><p>StringType().isEmail(‘请输入正确的邮箱地址’);</p></blockquote><ul><li>isURL(errorMessage: string)</li></ul><blockquote><p>StringType().isURL(‘请输入正确的URL地址’);</p></blockquote><ul><li>isOneOf(items: Array, errorMessage: string)</li></ul><blockquote><p>StringType().isOneOf([‘Javascript’, ‘CSS’], ‘只能输入 <code>Javascript</code>和 <code>CSS</code>‘);</p></blockquote><ul><li>containsLetter(errorMessage: string)</li></ul><blockquote><p>StringType().containsLetter(‘必须包含英文字符’);</p></blockquote><ul><li>containsUppercaseLetter(errorMessage: string)</li></ul><blockquote><p>StringType().containsUppercaseLetter(‘必须包含大写的英文字符’);</p></blockquote><ul><li>containsLowercaseLetter(errorMessage: string)</li></ul><blockquote><p>StringType().containsLowercaseLetter(‘必须包含小写的英文字符’);</p></blockquote><ul><li>containsLetterOnly(errorMessage: string)</li></ul><blockquote><p>StringType().containsLetterOnly(‘只能包含的英文字符’);</p></blockquote><ul><li>containsNumber(errorMessage: string)</li></ul><blockquote><p>StringType().containsNumber(‘必须包含数字’);</p></blockquote><ul><li>pattern(regExp: RegExp, errorMessage: string)</li></ul><blockquote><p>StringType().pattern(/^[1-9][0-9]{3}\s?[a-zA-Z]{2}$/, ‘请输入合法字符’);</p></blockquote><ul><li>rangeLength(minLength: number, maxLength: number, errorMessage: string)</li></ul><blockquote><p>StringType().rangeLength(6, 30, ‘字符个数只能在 6 - 30 之间’);</p></blockquote><ul><li>minLength(minLength: number, errorMessage: string)</li></ul><blockquote><p>StringType().minLength(6, ‘最小需要6个字符’);</p></blockquote><ul><li>maxLength(maxLength: number, errorMessage: string)</li></ul><blockquote><p>StringType().minLength(30, ‘最大只能30个字符’);</p></blockquote><ul><li>addRule(onValid: Function, errorMessage: string)</li></ul><blockquote><p>StringType().addRule((value, data) =&gt; {<br>return /^[1-9][0-9]{3}\s?[a-zA-Z]{2}$/.test(value);<br>}, ‘请输入合法字符’);</p></blockquote><h2 id="NumberType"><a href="#NumberType" class="headerlink" title="NumberType"></a>NumberType</h2><ul><li>isRequired(errorMessage: string)</li></ul><blockquote><p>NumberType().isRequired(‘该字段必填’);</p></blockquote><ul><li>isInteger(errorMessage: string)</li></ul><blockquote><p>NumberType().isInteger(‘只能是整型’);</p></blockquote><ul><li>isOneOf(items: Array, errorMessage: string)</li></ul><blockquote><p>NumberType().isOneOf([5, 10, 15], ‘只能是<code>5</code>,<code>10</code>,<code>15</code>‘);</p></blockquote><ul><li>pattern(regExp: RegExp, errorMessage: string)</li></ul><blockquote><p>NumberType().pattern(/^[1-9][0-9]{3}$/, ‘请输入合法字符’);</p></blockquote><ul><li>range(minLength: number, maxLength: number, errorMessage: string)</li></ul><blockquote><p>NumberType().range(18, 40, ‘请输入 18 - 40 之间的数字’);</p></blockquote><ul><li>min(min: number, errorMessage: string)</li></ul><blockquote><p>NumberType().min(18, ‘最小值 18’);</p></blockquote><ul><li>max(max: number, errorMessage: string)</li></ul><blockquote><p>NumberType().max(40, ‘最大值 40’);</p></blockquote><ul><li>addRule(onValid: Function, errorMessage: string)</li></ul><blockquote><p>NumberType().addRule((value, data) =&gt; {<br>return value % 5 === 0;<br>}, ‘请输入有效的数字’);</p></blockquote><h2 id="ArrayType"><a href="#ArrayType" class="headerlink" title="ArrayType"></a>ArrayType</h2><ul><li>isRequired(errorMessage: string)</li></ul><blockquote><p>ArrayType().isRequired(‘该字段必填’);</p></blockquote><ul><li>rangeLength(minLength: number, maxLength: number, errorMessage: string)</li></ul><blockquote><p>ArrayType().rangeLength(1, 3, ‘至少选择1个，但不能超过3个’);</p></blockquote><ul><li>minLength(minLength: number, errorMessage: string)</li></ul><blockquote><p>ArrayType().minLength(1, ‘至少选择1个’);</p></blockquote><ul><li>maxLength(maxLength: number, errorMessage: string)</li></ul><blockquote><p>ArrayType().maxLength(3, ‘不能超过3个’);</p></blockquote><ul><li>unrepeatable(errorMessage: string)</li></ul><blockquote><p>ArrayType().unrepeatable(‘不能出现重复选项’);</p></blockquote><ul><li>of(type: Object, errorMessage: string)</li></ul><blockquote><p>ArrayType().of(StringType().isEmail(), ‘格式错误’);</p></blockquote><ul><li>addRule(onValid: Function, errorMessage: string)</li></ul><blockquote><p>ArrayType().addRule((value, data) =&gt; {<br>return value.length % 2 === 0;<br>}, ‘好事成双’);</p></blockquote><h2 id="DateType"><a href="#DateType" class="headerlink" title="DateType"></a>DateType</h2><ul><li>isRequired(errorMessage: string)</li></ul><blockquote><p>DateType().isRequired(‘日期不能为空’);</p></blockquote><ul><li>range(min: Date, max: Date, errorMessage: string)</li></ul><blockquote><p>DateType().range(<br>new Date(‘08/01/2017’),<br>new Date(‘08/30/2017’),<br>‘时间应该在 08/01/2017 - 08/30/2017 之间’<br>);</p></blockquote><ul><li>min(min: Date, errorMessage: string)</li></ul><blockquote><p>DateType().min(new Date(‘08/01/2017’), ‘时间的最小值 08/01/2017’);</p></blockquote><ul><li>max(max: Date, errorMessage: string)</li></ul><blockquote><p>DateType().max(new Date(‘08/30/2017’), ‘时间的最大值 08/30/2017’);</p></blockquote><ul><li>addRule(onValid: Function, errorMessage: string)</li></ul><blockquote><p>DateType().addRule((value, data) =&gt; {<br>return value.getDay() === 2;<br>}, ‘只能选择周二’);</p></blockquote><h2 id="ObjectType"><a href="#ObjectType" class="headerlink" title="ObjectType"></a>ObjectType</h2><ul><li>isRequired(errorMessage: string)</li></ul><blockquote><p>ObjectType().isRequired(‘该对象不能为空’);</p></blockquote><ul><li>shape(type: Object)</li></ul><blockquote><p>ObjectType().shape({<br>email: StringType().isEmail(‘应该是一个 email’),<br>age: numberType().min(18, ‘年龄应该大于18岁’)<br>});</p></blockquote><ul><li>addRule(onValid: Function, errorMessage: string)</li></ul><blockquote><p>ObjectType().addRule((value, data) =&gt; {<br>if (value.id || value.email) {<br>return true;<br>}<br>return false;<br>}, ‘id 与 email 必须有一个不能为空’);</p></blockquote><h2 id="BooleanType"><a href="#BooleanType" class="headerlink" title="BooleanType"></a>BooleanType</h2><ul><li>isRequired(errorMessage: string)</li></ul><blockquote><p>BooleanType().isRequired(‘该字段不能为空’);</p></blockquote><ul><li>addRule(onValid: Function, errorMessage: string)</li></ul><blockquote><p>ObjectType().addRule((value, data) =&gt; {<br>if (typeof value === ‘undefined’ &amp;&amp; A === 10) {<br>return false;<br>}<br>return true;<br>}, ‘当 A 等于 10 的时候，该值必须为空’);</p></blockquote></div><div><div id="reward-container"><div></div><button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">打赏</button><div id="qr" style="display:none"><div style="display:inline-block"><img src="/images/wechatpay.png" alt="tcly861204 微信支付"><p>微信支付</p></div><div style="display:inline-block"><img src="/images/alipay.jpg" alt="tcly861204 支付宝"><p>支付宝</p></div></div></div></div><div><div><div style="text-align:center;color:#ccc;font-size:14px">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div></div></div><footer class="post-footer"><div class="post-widgets"><div class="social_share"><div id="needsharebutton-postbottom"><span class="btn"><i class="fa fa-share-alt" aria-hidden="true"></i></span></div></div></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2019/07/05/48个JS开发常用工具函数/" rel="next" title="48个JS开发常用工具函数"><i class="fa fa-chevron-left"></i> 48个JS开发常用工具函数</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"><a href="/2019/07/31/vue窗口自定义窗口/" rel="prev" title="vue实现自定义窗口">vue实现自定义窗口<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article></div></div><div class="comments" id="comments"><div id="lv-container" data-id="city" data-uid="MTAyMC80NTg2OC8yMjM3OQ=="></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap">站点概览</li></ul><div class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person"><img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="tcly861204"><p class="site-author-name" itemprop="name">tcly861204</p><div class="site-description motion-element" itemprop="description">笨鸟先飞</div></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href="/archives/"><span class="site-state-item-count">16</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"><a href="/categories/"><span class="site-state-item-count">2</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"><a href="/tags/"><span class="site-state-item-count">17</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/tcly861204" title="GitHub &rarr; https://github.com/tcly861204" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a href="mailto:yourname@gmail.com" title="E-Mail &rarr; mailto:yourname@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i> E-Mail</a></span><span class="links-of-author-item"><a href="https://weibo.com/yourname" title="Weibo &rarr; https://weibo.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i> Weibo</a></span><span class="links-of-author-item"><a href="https://plus.google.com/yourname" title="Google &rarr; https://plus.google.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i> Google</a></span><span class="links-of-author-item"><a href="https://twitter.com/yourname" title="Twitter &rarr; https://twitter.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i> Twitter</a></span><span class="links-of-author-item"><a href="https://www.facebook.com/yourname" title="FB Page &rarr; https://www.facebook.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i> FB Page</a></span><span class="links-of-author-item"><a href="https://vk.com/yourname" title="VK Group &rarr; https://vk.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-vk"></i> VK Group</a></span><span class="links-of-author-item"><a href="https://stackoverflow.com/yourname" title="StackOverflow &rarr; https://stackoverflow.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-stack-overflow"></i> StackOverflow</a></span><span class="links-of-author-item"><a href="https://youtube.com/yourname" title="YouTube &rarr; https://youtube.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-youtube"></i> YouTube</a></span><span class="links-of-author-item"><a href="https://instagram.com/yourname" title="Instagram &rarr; https://instagram.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i> Instagram</a></span></div></div></div><div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#示例"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多重验证"><span class="nav-number">3.</span> <span class="nav-text">多重验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义验证"><span class="nav-number">4.</span> <span class="nav-text">自定义验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义验证-多字段交叉验证"><span class="nav-number">5.</span> <span class="nav-text">自定义验证 - 多字段交叉验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#嵌套对象"><span class="nav-number">6.</span> <span class="nav-text">嵌套对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组合"><span class="nav-number">7.</span> <span class="nav-text">组合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API"><span class="nav-number">8.</span> <span class="nav-text">API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SchemaModel"><span class="nav-number">9.</span> <span class="nav-text">SchemaModel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StringType"><span class="nav-number">10.</span> <span class="nav-text">StringType</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NumberType"><span class="nav-number">11.</span> <span class="nav-text">NumberType</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayType"><span class="nav-number">12.</span> <span class="nav-text">ArrayType</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DateType"><span class="nav-number">13.</span> <span class="nav-text">DateType</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ObjectType"><span class="nav-number">14.</span> <span class="nav-text">ObjectType</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BooleanType"><span class="nav-number">15.</span> <span class="nav-text">BooleanType</span></a></li></ol></div></div></div></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div class="copyright">&copy; <span itemprop="copyrightYear">2019</span><span class="with-love" id="animate"><i class="fa fa-snowflake-o"></i></span> <span class="author" itemprop="copyrightHolder">tcly861204</span></div><div class="busuanzi-count"><script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span class="post-meta-item-icon"><i class="fa fa-user"></i></span><span class="site-uv" title="总访客量"><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-eye"></i></span><span class="site-pv" title="总访问量"><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i></div></div><script>"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script id="ribbon" size="300" alpha="0.6" zindex="-1" src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-ribbon@1/canvas-ribbon.js"></script><script src="/lib/jquery/index.js?v=2.1.3"></script><script src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-reading-progress@1/reading_progress.min.js"></script><script src="/js/utils.js?v=7.1.1"></script><script src="/js/motion.js?v=7.1.1"></script><script src="/js/affix.js?v=7.1.1"></script><script src="/js/schemes/pisces.js?v=7.1.1"></script><script src="/js/scrollspy.js?v=7.1.1"></script><script src="/js/post-details.js?v=7.1.1"></script><script src="/js/next-boot.js?v=7.1.1"></script><script src="/js/js.cookie.js?v=7.1.1"></script><script src="/js/scroll-cookie.js?v=7.1.1"></script><script>window.livereOptions={refer:"2019/07/31/前端数据校验从建模开始/"},function(e,t){var n,r=e.getElementsByTagName(t)[0];"function"!=typeof LivereTower&&((n=e.createElement(t)).src="https://cdn-city.livere.com/js/embed.dist.js",n.async=!0,r.parentNode.insertBefore(n,r))}(document,"script")</script><script>// Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });</script><script>$("body").find("pre.mermaid").length&&$.ajax({type:"GET",url:"//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js",dataType:"script",cache:!0,success:function(){mermaid.initialize({theme:"forest",logLevel:3,flowchart:{curve:"linear"},gantt:{axisFormat:"%m/%d/%Y"},sequence:{actorMargin:50}})}})</script><script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.js"></script><script>pbOptions={iconStyle:"box",boxForm:"horizontal",position:"bottomCenter",networks:"Weibo,Wechat,Douban,QQZone,Twitter,Facebook"},new needShareButton("#needsharebutton-postbottom",pbOptions)</script><script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-bookmark@1/bookmark.min.js"></script><script>bookmark.scrollToMark("auto","#更多")</script></body></html>
